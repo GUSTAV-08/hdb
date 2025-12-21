@@ -255,34 +255,32 @@ html, body {
 }
 
 /* DESKTOP OPTIMIZATIONS */
-@media (min-width: 768px) {
-    .choices { 
-        flex-direction: row; 
-    }
-    
-    .choice-button { 
-        width: auto; 
-        flex: 1; 
-        text-align: center;
-    }
-    
-    .choice-button:hover {
-        transform: translateY(-2px);
-    }
-    
-    .card { 
-        width: 200px; 
-    }
-    
-    .stats-hud { 
-        font-size: 18px; 
-        top: 20px; 
-        right: 20px; 
+/* --- МОБИЛЬНАЯ КОРРЕКЦИЯ: ПОДНИМАЕМ ВСЁ ВВЕРХ --- */
+@media (max-width: 767px) {
+    /* 1. Сдвигаем фон выше, чтобы лица персонажей не перекрывались текстом */
+    .bg.mode-cover {
+        background-position: center 15% !important; 
     }
 
+    /* 2. Делаем панель компактной, чтобы она не "съедала" экран */
     .panel {
-        bottom: 8%;
-        padding: 25px;
+        bottom: 10px !important;
+        max-height: 48vh !important;
+        padding: 10px !important;
+    }
+
+    /* 3. Ограничиваем текст, чтобы кнопки всегда были видны */
+    .scene-text {
+        max-height: 12vh !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 5px !important;
+    }
+
+    /* 4. Компактные кнопки выбора */
+    .choice-button {
+        padding: 8px 10px !important;
+        font-size: 0.85rem !important;
+        margin-top: 5px !important;
     }
 }
 
