@@ -1,322 +1,393 @@
 /* RESET */
 * { box-sizing: border-box; }
 html, body { 
- height: 100%; margin: 0; 
- font-family: "Share Tech Mono", monospace; 
- background: #050505; color: #e9f7f7;
- overflow: hidden; 
+    height: 100%; margin: 0; 
+    font-family: "Share Tech Mono", monospace; 
+    background: #050505; color: #e9f7f7;
+    overflow: hidden; 
 }
 
 /* SCREENS */
 .screen { 
- display: none; 
- align-items: center; 
- justify-content: center; 
- height: 100vh; 
- width: 100vw; 
- padding: 20px; 
- position: relative; 
+    display: none; 
+    align-items: center; 
+    justify-content: center; 
+    height: 100vh; 
+    width: 100vw; 
+    padding: 20px; 
+    position: relative; 
 }
 .screen.active { display: flex; flex-direction: column; }
 
 /* АДАПТИВНЫЙ ФОН С УМНОЙ ЛОГИКОЙ */
 .bg { 
- position: fixed; 
- inset: 0; 
- background-position: center center; 
- background-repeat: no-repeat; 
- background-color: #0a0a0f; /* Fallback для contain */
- z-index: 0;
- transition: background-image 0.5s ease-in-out, filter 0.3s;
+    position: fixed; 
+    inset: 0; 
+    background-position: center center; 
+    background-repeat: no-repeat; 
+    background-color: #0a0a0f;
+    z-index: 0;
+    transition: background-image 0.5s ease-in-out, filter 0.3s;
 }
 
 /* Режим по умолчанию: полное погружение */
 .bg.mode-cover {
- background-size: cover;
- filter: brightness(0.7);
+    background-size: cover;
+    filter: brightness(0.7);
 }
 
 /* Режим портрета: весь арт виден */
 .bg.mode-contain {
- background-size: contain;
- filter: brightness(0.85); /* Меньше затемнения для портретов */
-}
-
-/* Мобильная оптимизация: приоритет cover для landscape артов */
-@media (max-width: 767px) and (orientation: portrait) {
- .bg.mode-cover {
-  background-size: cover;
-  background-position: center 25%; /* Фокус на верхней части (лица персонажей) */
- }
+    background-size: contain;
+    filter: brightness(0.85);
 }
 
 /* UI LAYER */
 .ui { 
- position: relative; 
- z-index: 5; 
- width: 100%; 
- height: 100%; 
- display: flex; 
- flex-direction: column; 
+    position: relative; 
+    z-index: 5; 
+    width: 100%; 
+    height: 100%; 
+    display: flex; 
+    flex-direction: column; 
 }
 
 .top-bar { 
- display: flex; 
- justify-content: flex-end; 
- padding: 15px; 
- gap: 10px;
+    display: flex; 
+    justify-content: flex-end; 
+    padding: 15px; 
+    gap: 10px;
 }
 
 /* STATS HUD */
 .stats-hud {
- position: absolute; 
- top: 10px; 
- right: 10px;
- background: rgba(0,0,0,0.85); 
- color: #00ffe1;
- padding: 8px 12px; 
- border-radius: 8px; 
- border: 1px solid rgba(0,255,225,0.3);
- font-size: 14px; 
- z-index: 100;
- backdrop-filter: blur(8px);
+    position: absolute; 
+    top: 10px; 
+    right: 10px;
+    background: rgba(0,0,0,0.85); 
+    color: #00ffe1;
+    padding: 8px 12px; 
+    border-radius: 8px; 
+    border: 1px solid rgba(0,255,225,0.3);
+    font-size: 14px; 
+    z-index: 100;
+    backdrop-filter: blur(8px);
 }
 
-/* DIALOG PANEL - ИСПРАВЛЕННАЯ ВЕРСИЯ */
+/* DIALOG PANEL */
 .panel { 
- position: absolute; 
- left: 50%; 
- bottom: 15px; /* Чуть ближе к низу */
- transform: translateX(-50%); 
- width: 94%; /* Чуть шире для мобилок */
- max-width: 900px; 
- background: rgba(10, 10, 15, 0.95); /* Чуть плотнее фон */
- border-radius: 16px; 
- padding: 12px; /* Меньше внутренний отступ */
- border: 1px solid rgba(0, 255, 225, 0.25); 
- backdrop-filter: blur(16px) saturate(180%);
- display: flex;
- flex-direction: column;
- /* ГЛАВНОЕ ИЗМЕНЕНИЕ: */
- max-height: 45vh; /* Панель никогда не займет больше половины экрана */
- overflow: hidden; /* Чтобы ничего не вылетало за границы */
-}
-.scene-text { 
- font-size: clamp(0.8rem, 3.5vw, 1rem); /* Чуть уменьшили шрифт */
- line-height: 1.25; 
- color: #dff; 
- max-height: 15vh; /* Ограничиваем высоту именно текста */
- overflow-y: auto; /* Если текста ОЧЕНЬ много, внутри появится прокрутка */
- margin-bottom: 8px;
+    position: absolute; 
+    left: 50%; 
+    bottom: 15px;
+    transform: translateX(-50%); 
+    width: 94%;
+    max-width: 900px; 
+    background: rgba(10, 10, 15, 0.95);
+    border-radius: 16px; 
+    padding: 12px;
+    border: 1px solid rgba(0, 255, 225, 0.25); 
+    backdrop-filter: blur(16px) saturate(180%);
+    display: flex;
+    flex-direction: column;
+    max-height: 45vh;
+    overflow: hidden;
 }
 
-/* CHOICES - АДАПТИВНАЯ КОЛОНКА */
+.scene-text { 
+    font-size: clamp(0.8rem, 3.5vw, 1rem);
+    line-height: 1.25; 
+    color: #dff; 
+    max-height: 15vh;
+    overflow-y: auto;
+    margin-bottom: 8px;
+}
+
+/* Кастомный скроллбар для текста */
+.scene-text::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scene-text::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 225, 0.4);
+    border-radius: 10px;
+}
+
+/* CHOICES */
 .choices { 
- display: flex; 
- flex-direction: column; 
- gap: 10px; 
- margin-top: 15px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 10px; 
+    margin-top: 15px; 
 }
 
 .choice-button { 
- width: 100%; 
- padding: 10px 12px; /* Было 14px, сделали 10px для экономии места */
- border-radius: 10px; 
- border: 1px solid rgba(0, 255, 225, 0.2); 
- background: rgba(255,255,255,0.03); 
- color: #00ffe1; 
- font-size: 0.85rem; /* Уменьшили размер шрифта кнопок */
- margin-bottom: 4px; /* Уменьшили расстояние между кнопками */
+    width: 100%; 
+    padding: 10px 12px;
+    border-radius: 10px; 
+    border: 1px solid rgba(0, 255, 225, 0.2); 
+    background: rgba(255,255,255,0.03); 
+    color: #00ffe1; 
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.85rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .choice-button:hover { 
- background: rgba(0, 255, 225, 0.15); 
- border-color: #00ffe1; 
- transform: translateX(4px);
- box-shadow: 0 0 20px rgba(0, 255, 225, 0.3);
+    background: rgba(0, 255, 225, 0.15); 
+    border-color: #00ffe1; 
+    transform: translateX(4px);
+    box-shadow: 0 0 20px rgba(0, 255, 225, 0.3);
 }
 
 .choice-button:active {
- transform: scale(0.98);
+    transform: scale(0.98);
 }
 
 /* CARDS */
 .cards { 
- display: flex; 
- gap: 15px; 
- flex-wrap: wrap; 
- justify-content: center; 
- margin: 20px 0; 
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    margin: 20px 0; 
 }
 
 .card { 
- width: 145px; 
- background: #111; 
- padding: 10px; 
- border-radius: 10px; 
- border: 1px solid #333; 
- cursor: pointer; 
- transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
+    width: 145px; 
+    background: #111; 
+    padding: 10px; 
+    border-radius: 10px; 
+    border: 1px solid #333; 
+    cursor: pointer; 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
 }
 
 .card img { 
- width: 100%; 
- aspect-ratio: 1/1; 
- object-fit: cover; 
- border-radius: 6px; 
+    width: 100%; 
+    aspect-ratio: 1/1; 
+    object-fit: cover; 
+    border-radius: 6px; 
 }
 
 .card-title { 
- margin-top: 8px; 
- text-align: center; 
- font-size: 0.9rem; 
+    margin-top: 8px; 
+    text-align: center; 
+    font-size: 0.9rem; 
 }
 
 .card:hover { 
- border-color: #00ffe1; 
- transform: translateY(-5px); 
- box-shadow: 0 8px 20px rgba(0, 255, 225, 0.2);
+    border-color: #00ffe1; 
+    transform: translateY(-5px); 
+    box-shadow: 0 8px 20px rgba(0, 255, 225, 0.2);
 }
 
 /* INTRO/INSTRUCTION BOXES */
 .intro-box, .instruction-box { 
- background: rgba(10, 10, 10, 0.95); 
- padding: 30px; 
- border-radius: 15px; 
- border: 1px solid rgba(0, 255, 225, 0.2); 
- text-align: center; 
- max-width: 600px;
- backdrop-filter: blur(10px); 
+    background: rgba(10, 10, 10, 0.95); 
+    padding: 30px; 
+    border-radius: 15px; 
+    border: 1px solid rgba(0, 255, 225, 0.2); 
+    text-align: center; 
+    max-width: 600px;
+    backdrop-filter: blur(10px); 
 }
 
 .instruction-content { 
- text-align: left; 
- font-size: 0.9rem; 
- max-height: 50vh; 
- overflow-y: auto; 
- margin: 15px 0; 
- padding-right: 10px; 
+    text-align: left; 
+    font-size: 0.9rem; 
+    max-height: 50vh; 
+    overflow-y: auto; 
+    margin: 15px 0; 
+    padding-right: 10px; 
 }
 
 /* Прокрутка в инструкции */
 .instruction-content::-webkit-scrollbar {
- width: 6px;
+    width: 6px;
 }
 
 .instruction-content::-webkit-scrollbar-track {
- background: rgba(255,255,255,0.05);
- border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
 }
 
 .instruction-content::-webkit-scrollbar-thumb {
- background: rgba(0, 255, 225, 0.3);
- border-radius: 10px;
+    background: rgba(0, 255, 225, 0.3);
+    border-radius: 10px;
 }
 
 /* BUTTONS */
 .btn { 
- padding: 10px 22px; 
- margin: 5px; 
- cursor: pointer; 
- font-family: inherit; 
- border-radius: 8px; 
- border: 1px solid #333; 
- background: #222; 
- color: #fff;
- transition: all 0.2s; 
+    padding: 10px 22px; 
+    margin: 5px; 
+    cursor: pointer; 
+    font-family: inherit; 
+    border-radius: 8px; 
+    border: 1px solid #333; 
+    background: #222; 
+    color: #fff;
+    transition: all 0.2s; 
 }
 
 .btn:hover {
- background: #333;
- transform: translateY(-2px);
+    background: #333;
+    transform: translateY(-2px);
 }
 
 .btn.primary { 
- background: #00ffe1; 
- color: #000; 
- border: none; 
- font-weight: bold; 
+    background: #00ffe1; 
+    color: #000; 
+    border: none; 
+    font-weight: bold; 
 }
 
 .btn.primary:hover {
- background: #00d4c0;
- box-shadow: 0 4px 15px rgba(0, 255, 225, 0.4);
+    background: #00d4c0;
+    box-shadow: 0 4px 15px rgba(0, 255, 225, 0.4);
 }
 
 .intro-controls {
- display: flex;
- gap: 10px;
- justify-content: center;
- flex-wrap: wrap;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .bottom-controls {
- margin-top: 20px;
+    margin-top: 20px;
 }
 
 /* DESKTOP OPTIMIZATIONS */
-/* --- МОБИЛЬНАЯ КОРРЕКЦИЯ: ПОДНИМАЕМ ВСЁ ВВЕРХ --- */
-@media (max-width: 767px) {
- /* 1. Сдвигаем фон выше, чтобы лица персонажей не перекрывались текстом */
- .bg.mode-cover {
-  background-position: center 15% !important; 
- }
+@media (min-width: 768px) {
+    .choices { 
+        flex-direction: row; 
+    }
+    
+    .choice-button { 
+        width: auto; 
+        flex: 1; 
+        text-align: center;
+    }
+    
+    .choice-button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .card { 
+        width: 200px; 
+    }
+    
+    .stats-hud { 
+        font-size: 18px; 
+        top: 20px; 
+        right: 20px; 
+    }
 
- /* 2. Делаем панель компактной, чтобы она не "съедала" экран */
- .panel {
-  bottom: 10px !important;
-  max-height: 48vh !important;
-  padding: 10px !important;
- }
-
- /* 3. Ограничиваем текст, чтобы кнопки всегда были видны */
- .scene-text {
-  max-height: 12vh !important;
-  font-size: 0.9rem !important;
-  margin-bottom: 5px !important;
- }
-
- /* 4. Компактные кнопки выбора */
- .choice-button {
-  padding: 8px 10px !important;
-  font-size: 0.85rem !important;
-  margin-top: 5px !important;
- }
+    .panel {
+        bottom: 8%;
+        padding: 25px;
+    }
 }
 
-/* Экстра-малые экраны */
+/* ====================================================================
+   МОБИЛЬНАЯ ОПТИМИЗАЦИЯ — ФИНАЛЬНАЯ ВЕРСИЯ
+==================================================================== */
+@media (max-width: 767px) {
+    /* КРИТИЧЕСКИ ВАЖНО: Фокус на лицах персонажей */
+    .bg.mode-cover {
+        background-size: cover !important;
+        background-position: center 15% !important;
+    }
+
+    /* Компактная панель диалога */
+    .panel {
+        bottom: 10px !important;
+        max-height: 48vh !important;
+        padding: 10px !important;
+        width: 96%;
+    }
+
+    /* Ограничение текста */
+    .scene-text {
+        max-height: 12vh !important;
+        font-size: 0.9rem !important;
+        margin-bottom: 5px !important;
+        line-height: 1.2;
+    }
+
+    /* Компактные кнопки выбора */
+    .choices {
+        gap: 8px !important;
+        margin-top: 10px !important;
+    }
+
+    .choice-button {
+        padding: 8px 10px !important;
+        font-size: 0.85rem !important;
+    }
+
+    /* Компактные карточки героев */
+    .card {
+        width: 120px;
+    }
+
+    /* Статистика */
+    .stats-hud {
+        font-size: 12px;
+        padding: 6px 10px;
+        top: 5px;
+        right: 5px;
+    }
+}
+
+/* Экстра-малые экраны (iPhone SE, старые Android) */
 @media (max-width: 480px) {
- .panel {
-  width: 96%;
-  padding: 10px; /* Еще меньше отступы */
-  bottom: 10px; /* Совсем близко к краю */
- }
+    .bg.mode-cover {
+        background-position: center 12% !important;
+    }
 
- .scene-text {
-  max-height: 20vh; /* Еще меньше места под текст */
-  font-size: 0.85rem;
- }
+    .panel {
+        width: 98%;
+        padding: 8px !important;
+        bottom: 8px !important;
+        max-height: 50vh !important;
+    }
 
- .choices {
-  gap: 6px; /* Кнопки ближе друг к другу */
-  margin-top: 8px;
- }
+    .scene-text {
+        max-height: 10vh !important;
+        font-size: 0.85rem !important;
+    }
 
- .choice-button {
-  padding: 8px 12px; /* Компактные кнопки */
-  font-size: 0.8rem;
- }
+    .choices {
+        gap: 6px !important;
+        margin-top: 8px !important;
+    }
+
+    .choice-button {
+        padding: 7px 8px !important;
+        font-size: 0.8rem !important;
+    }
+
+    .card {
+        width: 100px;
+    }
+
+    .stats-hud {
+        font-size: 11px;
+        padding: 5px 8px;
+    }
 }
 
 /* LOG */
 .log { 
- position: fixed; 
- left: 10px; 
- bottom: 10px; 
- background: rgba(255,0,0,0.2); 
- padding: 10px; 
- z-index: 1000;
- border-radius: 8px; 
+    position: fixed; 
+    left: 10px; 
+    bottom: 10px; 
+    background: rgba(255,0,0,0.2); 
+    padding: 10px; 
+    z-index: 1000;
+    border-radius: 8px; 
 }
 
-.hidden { display: none !important; } 
+.hidden { display: none !important; }
