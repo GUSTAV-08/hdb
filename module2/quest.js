@@ -83,7 +83,7 @@
     });
 
     btnNextModule && btnNextModule.addEventListener('click', () => { 
-        window.location.href = '/module3/gacha.html'; 
+        window.location.href = '../module3/gacha.html'; 
     });
 
     async function startLoadStory(hero) {
