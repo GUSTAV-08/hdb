@@ -201,7 +201,7 @@
         
         // Переход в гачу
         if (target === 'GO_TO_GACHA' || target === 'to_gacha' || target === 'next_module') {
-            window.location.href = '/module3/gacha.html';
+            window.location.href = '../module3/gacha.html';
             return;
         }
 
