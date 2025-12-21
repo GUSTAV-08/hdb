@@ -103,10 +103,10 @@ html, body {
 
 .scene-text { 
     font-size: clamp(0.85rem, 3.8vw, 1.05rem); /* Уменьшили адаптивный размер */
-    line-height: 1.4; 
+    line-height: 1.3; 
     color: #dff; 
-    min-height: 40px;
-    max-height: 35vh; /* Чтобы текст не вылезал за пределы экрана */
+    min-height: 20px;
+    max-height: 25vh; /* Чтобы текст не вылезал за пределы экрана */
     overflow-y: auto; /* Добавляет прокрутку только тексту, если он слишком длинный */
     text-shadow: 0 1px 4px rgba(0,0,0,0.5); 
 }
@@ -294,18 +294,23 @@ html, body {
 @media (max-width: 480px) {
     .panel {
         width: 96%;
-        padding: 12px;
-        bottom: 2%;
+        padding: 10px; /* Еще меньше отступы */
+        bottom: 10px; /* Совсем близко к краю */
     }
 
-    .stats-hud {
-        font-size: 12px;
-        padding: 6px 10px;
+    .scene-text {
+        max-height: 20vh; /* Еще меньше места под текст */
+        font-size: 0.85rem;
+    }
+
+    .choices {
+        gap: 6px; /* Кнопки ближе друг к другу */
+        margin-top: 8px;
     }
 
     .choice-button {
-        padding: 10px;
-        font-size: 0.85rem;
+        padding: 8px 12px; /* Компактные кнопки */
+        font-size: 0.8rem;
     }
 }
 
