@@ -1,0 +1,57 @@
+:root{
+  --bg:#000;
+  --neon:#00ffe1;
+  --muted: rgba(0,162,255,0.36);
+  --glitch1:#ff00c8;
+  --glitch2:#00ff4c;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);font-family:'Share Tech Mono',monospace;color:var(--neon);-webkit-font-smoothing:antialiased;}
+
+/* Basic page */
+#console-wrap{max-width:980px;margin:72px auto;padding:18px;border-radius:10px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); box-shadow:0 10px 30px rgba(0,0,0,0.6); border:1px solid rgba(0,255,225,0.04); overflow:hidden;}
+pre#console{white-space:pre-wrap;word-wrap:break-word;line-height:1.36;font-size:15px;padding:18px;min-height:320px; margin:0; color:var(--neon);}
+
+/* Top controls container: slightly visible, becomes fully visible on hover */
+.module-controls{
+  position:fixed;top:14px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:9000;opacity:0.28;transition:opacity .22s;
+}
+.module-controls:hover{opacity:1}
+
+/* Circular control buttons */
+.ctrl-btn{
+  width:62px;height:62px;border-radius:999px;border:2px solid var(--muted);background:rgba(0,0,0,0.18);color:var(--muted);font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;
+}
+.ctrl-btn:hover{border-color:var(--neon);color:var(--neon);box-shadow:0 6px 18px rgba(0,162,255,0.12),0 0 28px rgba(0,162,255,0.06);transform:translateY(-3px)}
+/* Highlight class used when Next becomes active */
+.ctrl-btn.highlight{ border-color: #ffd166; color:#ffd166; box-shadow:0 0 20px #ffd166,0 0 40px #ffd166; animation: pulse 1.2s infinite; }
+@keyframes pulse{0%{transform:scale(1)}50%{transform:scale(1.06)}100%{transform:scale(1)}}
+
+/* Kanji overlay (error style) */
+#kanji-overlay{
+  pointer-events:none;
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:8000;opacity:0;
+  transition:opacity .18s;
+}
+.kanji-bubble{
+  font-size:3.6rem;color:var(--glitch1);text-shadow:0 0 12px var(--glitch1),0 0 30px var(--glitch2);background:rgba(0,0,0,0.4);padding:12px 18px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+}
+
+/* Glitch animation applied to console briefly */
+.console-glitch {
+  animation: glitch-shift 0.9s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes glitch-shift {
+  0%{transform:none;filter: none}
+  30%{transform:translateX(-6px) skewX(-2deg);filter: hue-rotate(6deg) contrast(1.05)}
+  60%{transform:translateX(6px) skewX(2deg);filter: hue-rotate(-6deg) contrast(1.05)}
+  100%{transform:none;filter:none}
+}
+
+/* Responsive */
+@media(max-width:520px){
+  .ctrl-btn{width:52px;height:52px;font-size:13px}
+  .kanji-bubble{font-size:2.4rem;padding:8px 12px}
+  #console-wrap{margin:56px 12px}
+}

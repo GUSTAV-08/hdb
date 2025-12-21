@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Unlocked</title>
+    <style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: #050208;
+        color: white;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        min-height: 100vh;
+        /* Используем дисплей флекс, чтобы центрировать всё четко */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        overflow-x: hidden;
+    }
+
+    h1 {
+        font-size: clamp(1.1rem, 5vw, 1.5rem); /* Адаптивный размер шрифта */
+        color: #e6a8d7;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 20px;
+        text-shadow: 0 0 15px rgba(230, 168, 215, 0.4);
+    }
+
+    .photo-frame {
+        width: 100%;
+        /* Ограничиваем ширину для компьютеров, на мобилках будет во весь экран */
+        max-width: 500px; 
+        /* Центрируем картинку внутри */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        
+        border: 2px solid #6a3082;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 8px;
+        box-shadow: 0 0 30px rgba(106, 48, 130, 0.5);
+        
+        /* Чтобы картинка не «улетала» вниз за экран */
+        max-height: 70vh; 
+        overflow: hidden;
+    }
+
+    .photo-frame img {
+        width: 100%;
+        height: 100%;
+        /* ЭТО ГЛАВНОЕ: картинка растягивается, заполняя рамку, 
+           но не деформируется. Края могут чуть-чуть обрезаться для "зума" */
+        object-fit: cover; 
+        border-radius: 15px;
+        /* Немного приближаем программно, если нужно больше акцента */
+        transform: scale(1.02); 
+    }
+
+    .next-btn {
+        display: inline-block;
+        margin-top: 30px;
+        padding: 16px 45px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: white;
+        background: linear-gradient(135deg, #6a3082 0%, #da70d6 100%);
+        border-radius: 50px;
+        box-shadow: 0 5px 20px rgba(106, 48, 130, 0.4);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .next-btn:hover {
+        transform: translateY(-3px) scale(1.03);
+        box-shadow: 0 8px 25px rgba(218, 112, 214, 0.5);
+        filter: brightness(1.1);
+    }
+
+    /* Адаптация под очень маленькие экраны (старые iPhone и т.д.) */
+    @media (max-height: 600px) {
+        .photo-frame {
+            max-height: 55vh;
+        }
+        h1 { margin-bottom: 10px; }
+        .next-btn { margin-top: 15px; padding: 12px 30px; }
+    }
+</style>
+</head>
+<body>
+
+    <h1>Секретный фрагмент найден</h1>
+
+    <div class="photo-frame">
+        <img src="img/collection/ultimate.jpeg" alt="Legendary Moment">
+    </div>
+
+    <a href="../module4/finale.html" class="next-btn">Перейти к финалу</a>
+
+</body>
+</html>

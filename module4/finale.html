@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Финальный Модуль: День Рождения</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Georgia:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- БАЗОВЫЕ СТИЛИ --- */
+        body {
+            margin: 0;
+            overflow: hidden; /* Убираем скролл */
+            font-family: 'Share Tech Mono', monospace;
+            background-color: #000;
+            touch-action: none; /* Отключаем стандартные жесты браузера (зум, скролл) */
+        }
+
+        #scene-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        /* --- ИНСТРУКЦИЯ --- */
+        #instruction {
+            position: absolute;
+            bottom: 30px;
+            width: 90%;
+            left: 5%;
+            color: #0ff;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px 0;
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            pointer-events: none; /* Пропускает клики сквозь себя */
+            user-select: none;
+            opacity: 0.8;
+        }
+
+        /* --- МОДАЛЬНОЕ ОКНО (ПИСЬМО) --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9); /* Темный фон */
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #1a1a2e;
+            margin: 15% auto; /* Отступ сверху */
+            padding: 25px;
+            border: 2px solid #ffcc00; /* Золотая рамка */
+            width: 85%; /* Ширина для мобильных */
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 0 40px rgba(255, 204, 0, 0.2);
+            position: relative;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            max-height: 70vh; /* Чтобы не вылезало за экран */
+        }
+
+        /* Кнопка закрытия (Крестик) - сделан побольше для пальцев */
+        .close-button {
+            color: #ffcc00;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 40px; /* Крупно для тапа */
+            line-height: 30px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        h2 {
+            text-align: center;
+            color: #d000ff;
+            margin-top: 10px;
+            font-size: 1.5em;
+            border-bottom: 1px solid #333;
+            padding-bottom: 15px;
+        }
+
+        /* Текст письма */
+        .typing-container {
+            font-family: 'Georgia', serif;
+            font-size: 1.1em;
+            line-height: 1.5;
+            overflow-y: auto; /* Прокрутка внутри письма */
+            flex-grow: 1;
+            white-space: pre-wrap; /* Сохраняет абзацы */
+            padding-right: 10px;
+        }
+        .modal-content {
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            padding-bottom: env(safe-area-inset-bottom); /* Учитываем вырезы на iPhone */
+            padding-top: env(safe-area-inset-top);
+            box-sizing: border-box;
+        }
+        .typing-container {
+            font-size: clamp(14px, 4vw , 20px);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+
+        }
+
+        /* Скроллбар для текста */
+        .typing-container::-webkit-scrollbar { width: 6px; }
+        .typing-container::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+    <div id="scene-container"></div>
+    
+    <div id="instruction">Крути сцену • Нажми на конверт</div>
+
+    <div id="letter-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>💌 Для тебя</h2>
+            <div id="letter-text" class="typing-container"></div>
+        </div>
+    </div>
+    
+    <audio id="background-audio" loop preload="auto">
+        <source src="mp4bg4.mp3" type="audio/mp3">
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/RGBELoader.js"></script>
+    
+    <script src="finale.js"></script>
+
+</body>
+</html>

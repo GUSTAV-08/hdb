@@ -1,0 +1,81 @@
+{
+  "buffs": [
+    {
+      "id": "mood",
+      "name": "+1 Mood",
+      "visual": "img/buffs/mood.jpeg",
+      "rarity": "common",
+      "effect_text": "Сервер мира крутится в твою сторону. Эмоциональный кэш очищен."
+    },
+    {
+      "id": "calm",
+      "name": "+1 Calm",
+      "visual": "img/buffs/calm.jpeg",
+      "rarity": "common",
+      "effect_text": "Ошибки памяти очищены. Давление нормализовано. Тихий шелест кулеров."
+    },
+    {
+      "id": "focus",
+      "name": "+1 Focus",
+      "visual": "img/buffs/focus.jpeg",
+      "rarity": "common",
+      "effect_text": "Уровень концентрации повышен. Все второстепенные уведомления заблокированы."
+    },
+    {
+      "id": "luck",
+      "name": "+1 Luck",
+      "visual": "img/buffs/luck.jpeg",
+      "rarity": "uncommon",
+      "effect_text": "Сегодня backend судьбы поставил тебе +1 к критическому успеху. Шансы на успех выше."
+    },
+    {
+      "id": "energy",
+      "name": "+1 Energy",
+      "visual": "img/buffs/energy.jpeg",
+      "rarity": "uncommon",
+      "effect_text": "Система: перезагрузка завершена. Твоя мощность восстановлена. Работает на чистой плазме."
+    },
+    {
+      "id": "creativity",
+      "name": "+1 Creativity",
+      "visual": "img/buffs/creativity.jpeg",
+      "rarity": "uncommon",
+      "effect_text": "Обнаружена новая библиотека идей. У тебя открылся доступ к ним."
+    },
+    {
+      "id": "stability",
+      "name": "+1 Stability",
+      "visual": "img/buffs/stability.jpeg",
+      "rarity": "rare",
+      "effect_text": "Никаких багов. Только стабильный билд. Код подтвержден высшим компилятором."
+    },
+    {
+      "id": "protection",
+      "name": "+1 Protection",
+      "visual": "img/buffs/protection.jpeg",
+      "rarity": "rare",
+      "effect_text": "Включен фаервол от стресса и негативных мыслей. У тебя Иммунитет к вирусам дня."
+    },
+    {
+      "id": "speed",
+      "name": "+1 Speed",
+      "visual": "img/buffs/speed.jpeg",
+      "rarity": "ultra",
+      "effect_text": "Время сжалось до двух наносекунд. Ты успеваешь в два раза больше."
+    },
+    {
+      "id": "rewind",
+      "name": "Rewind Token",
+      "visual": "img/buffs/rewind.jpeg",
+      "rarity": "ultra",
+      "effect_text": "Получен жетон 'Перемотка'. Можно отменить одно неверное решение (в жизни)."
+    },
+    {
+      "id": "godmode",
+      "name": "God Mode",
+      "visual": "img/buffs/godmode.jpeg",
+      "rarity": "legendary",
+      "effect_text": "Взломана главная консоль.Теперь Ты — оператор. Все переменные под контролем. Неуязвимость на 24 часа."
+    }
+  ]
+}

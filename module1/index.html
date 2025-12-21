@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Protocol E-17 — Boot</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<link rel="stylesheet" href="console.css">
+</head>
+<body>
+
+  <!-- Controls (top center) -->
+  <div class="module-controls" id="controls">
+    <button class="ctrl-btn" id="start-btn">START</button>
+    <button class="ctrl-btn" id="restart-btn">RESTART</button>
+    <button class="ctrl-btn" id="next-btn">NEXT</button>
+  </div>
+
+  <!-- Kanji/error overlay for glitch -->
+  <div id="kanji-overlay" aria-hidden="true"></div>
+
+  <!-- Console area -->
+  <main id="console-wrap">
+    <pre id="console" aria-live="polite" role="log">&gt; Ready. Hover top to reveal controls. Press START to boot...
+</pre>
+  </main>
+
+  <!-- Background music (do not autoplay; will play on Start click) -->
+  <audio id="bg-music" src="assets/music/blindheart_solitude.mp3" preload="none"></audio>
+
+  <script src="console.js"></script>
+</body>
+</html>

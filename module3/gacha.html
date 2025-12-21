@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Module 3 — Gacha</title>
+
+  <!-- Общие стили проекта (если есть) -->
+  <link rel="stylesheet" href="../module1/global.css">
+  <!-- Стили модуля гача -->
+  <link rel="stylesheet" href="gacha.css">
+
+  <!-- Минимальная мета/фавикон (опционально) -->
+  <meta name="description" content="Gacha module — поздравительная гача для проекта Gustav">
+</head>
+<body>
+
+  <!-- Всплывающая подсказка (можно закрывать в JS) -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <!-- Верхняя панель — кнопки управления (Start/Restart/Next) -->
+  <header class="module-header">
+    <div class="module-controls">
+      <button id="btn-start" class="ctrl-btn">Start</button>
+      <button id="btn-restart" class="ctrl-btn">Restart</button>
+      <button id="btn-next" class="ctrl-btn">Next</button>
+    </div>
+
+    <div class="module-title">
+      <h1>🎁 Gacha — Pulls</h1>
+      <p class="subtitle">Используйте прокрутки, чтобы получить награды и коллекционные предметы.</p>
+    </div>
+  </header>
+
+  <!-- Основной контейнер -->
+  <main id="gacha-app" class="gacha-app">
+
+    <!-- Левая колонка: машина гача и визуал -->
+    <section class="gacha-panel" aria-label="Gacha machine area">
+      <!-- Фон/визуал машины (изображение) -->
+      <div id="gacha-machine" class="gacha-machine" role="img" aria-label="Gacha machine visual">
+        <!-- Центральный кейс / слот -->
+        <div id="case-frame" class="case-frame">
+          <img id="case-image" src="img/cases/neon_case.jpeg" alt="Case" />
+          <div id="case-overlay" class="case-overlay"></div>
+        </div>
+
+        <!-- Большая кнопка прокрутки -->
+        <div class="spin-area">
+          <div id="tokens-display" class="tokens-display" aria-live="polite">Tokens: <span id="tokens-count">0</span></div>
+          <button id="btn-spin" class="spin-btn" aria-label="Open case">SPIN</button>
+          <div class="spin-hint">Нажмите SPIN, чтобы открыть кейс</div>
+        </div>
+      </div>
+
+      <!-- Анимационный контейнер результата (появляется после выпадения) -->
+      <div id="result-modal" class="result-modal hidden" role="dialog" aria-hidden="true" aria-modal="true">
+        <div class="result-card">
+          <button id="result-close" class="result-close" aria-label="Close result">✕</button>
+          <div id="result-rarity" class="result-rarity"></div>
+          <img id="result-image" class="result-image" src="" alt="">
+          <div id="result-title" class="result-title"></div>
+          <div id="result-desc" class="result-desc"></div>
+          <div class="result-actions">
+            <button id="btn-close-return" class="btn">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Правая колонка: инвентарь, история выпадений, настройки -->
+    <aside class="side-panel" aria-label="Inventory and logs">
+      <div class="panel-block">
+        <h3>Инвентарь</h3>
+        <div id="inventory" class="inventory-grid" aria-live="polite">
+          <!-- карточки инвентаря динамически добавляются сюда -->
+        </div>
+      </div>
+
+      <div class="panel-block">
+        <h3>История выпадений</h3>
+        <ul id="pull-log" class="pull-log">
+          <!-- пункты логов появляются здесь -->
+        </ul>
+      </div>
+     
+      <div class="panel-block">
+        <h3>Настройки</h3>
+        <label class="setting">
+          <span>Авто-анимация</span>
+          <input id="toggle-anim" type="checkbox" checked>
+        </label>
+        <label class="setting">
+          <span>Звук</span>
+          <input id="toggle-sound" type="checkbox" checked>
+        </label>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Подвал (опционально краткая инструкция) -->
+  <footer class="module-footer">
+    <small>Gacha module — версия альфа. Все звуки и картинки — из папки <code>module3/img</code>.</small>
+  </footer>
+
+  <!-- Аудио (предзагружать можно в JS) -->
+ <audio id="sfx-spin" src="sfx/spin.mp3" preload="auto"></audio>
+<audio id="sfx-win" src="sfx/win.mp3" preload="auto"></audio>
+<audio id="sfx-rare" src="sfx/rare.mp3" preload="auto"></audio>
+<audio id="sfx-legendary" src="sfx/legendary.mp3" preload="auto"></audio>
+
+  <!-- Скрипт модуля (логика выпадений + анимации) -->
+  <script src="gacha.js" defer></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+</body>
+</html>

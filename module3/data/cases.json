@@ -1,0 +1,343 @@
+{
+
+  "cases": [
+
+    {
+
+      "id": "common_case",
+
+      "name": "Обычный кейс",
+
+      "visual": "img/cases/gray_case.jpeg",
+
+      "rarity": "common",
+
+      "price": 1,
+
+      "min_drops": 1,
+
+      "max_drops": 2,
+
+      "description": "Самый обычный кейс, содержащий базовые улучшения и первые части коллекции.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 75 },
+
+        { "type": "collectible", "chance": 25 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 80, "uncommon": 20, "rare": 0, "ultra": 0, "legendary": 0 },
+
+        "collectible": { "common": 60, "uncommon": 40, "rare": 0, "ultra": 0, "legendary": 0 }
+
+      },
+
+      "tags": ["basic", "starter", "low_cost"]
+
+    },
+
+    {
+
+      "id": "tech_case",
+
+      "name": "Техно кейс",
+
+      "visual": "img/cases/tech_case.jpeg",
+
+      "rarity": "uncommon",
+
+      "price": 3,
+
+      "min_drops": 1,
+
+      "max_drops": 2,
+
+      "description": "Выглядит как разрозненные схемы и провода. Немного лучше шансы на коллекционные предметы.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 65 },
+
+        { "type": "collectible", "chance": 35 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 60, "uncommon": 30, "rare": 10, "ultra": 0, "legendary": 0 },
+
+        "collectible": { "common": 50, "uncommon": 35, "rare": 15, "ultra": 0, "legendary": 0 }
+
+      },
+
+      "tags": ["tech", "schematic", "mid_tier"]
+
+    },
+
+    {
+
+      "id": "neon_case",
+
+      "name": "Неоновый кейс",
+
+      "visual": "img/cases/neon_case.jpeg",
+
+      "rarity": "rare",
+
+      "price": 5,
+
+      "min_drops": 2,
+
+      "max_drops": 3,
+
+      "description": "Яркий, светящийся, эффектный кейс. Впервые появляется возможность найти письма.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 50 },
+
+        { "type": "collectible", "chance": 35 },
+
+        { "type": "letter", "chance": 15 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 40, "uncommon": 40, "rare": 20, "ultra": 0, "legendary": 0 },
+
+        "collectible": { "common": 30, "uncommon": 40, "rare": 30, "ultra": 0, "legendary": 0 },
+
+        "letter": { "common": 60, "uncommon": 30, "rare": 10, "ultra": 0, "legendary": 0 }
+
+      },
+
+      "tags": ["neon", "color", "rare_drop"]
+
+    },
+
+    {
+
+      "id": "crystal_case",
+
+      "name": "Кристаллический кейс",
+
+      "visual": "img/cases/crystal_case.jpeg",
+
+      "rarity": "rare",
+
+      "price": 7,
+
+      "min_drops": 2,
+
+      "max_drops": 3,
+
+      "description": "Звенящий, как разбивающийся кристалл. Смещает акцент на более редкий дроп.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 45 },
+
+        { "type": "collectible", "chance": 30 },
+
+        { "type": "letter", "chance": 25 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 30, "uncommon": 40, "rare": 30, "ultra": 0, "legendary": 0 },
+
+        "collectible": { "common": 20, "uncommon": 35, "rare": 45, "ultra": 0, "legendary": 0 },
+
+        "letter": { "common": 40, "uncommon": 40, "rare": 20, "ultra": 0, "legendary": 0 }
+
+      },
+
+      "tags": ["crystal", "sound", "collect_focus"]
+
+    },
+
+    {
+
+      "id": "plasma_case",
+
+      "name": "Плазменный кейс",
+
+      "visual": "img/cases/plasma_case.jpeg",
+
+      "rarity": "ultra",
+
+      "price": 10,
+
+      "min_drops": 2,
+
+      "max_drops": 3,
+
+      "description": "Огонь и разряды, как энергия. Высокий шанс на редкие улучшения и письма.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 40 },
+
+        { "type": "collectible", "chance": 30 },
+
+        { "type": "letter", "chance": 30 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 15, "uncommon": 30, "rare": 40, "ultra": 15, "legendary": 0 },
+
+        "collectible": { "common": 10, "uncommon": 30, "rare": 40, "ultra": 20, "legendary": 0 },
+
+        "letter": { "common": 20, "uncommon": 40, "rare": 40, "ultra": 0, "legendary": 0 }
+
+      },
+
+      "tags": ["plasma", "fire", "ultra_access"]
+
+    },
+
+    {
+
+      "id": "glitch_case",
+
+      "name": "Глитч кейс",
+
+      "visual": "img/cases/glitch_case.jpeg",
+
+      "rarity": "ultra",
+
+      "price": 12,
+
+      "min_drops": 3,
+
+      "max_drops": 4,
+
+      "description": "Баговый эффект, редкий и загадочный. Лучший шанс найти секретный предмет.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 25 },
+
+        { "type": "collectible", "chance": 25 },
+
+        { "type": "letter", "chance": 20 },
+
+        { "type": "fragment", "chance": 30 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 10, "uncommon": 20, "rare": 35, "ultra": 35, "legendary": 0 },
+
+        "collectible": { "common": 5, "uncommon": 15, "rare": 30, "ultra": 40, "legendary": 10 },
+
+        "letter": { "common": 10, "uncommon": 20, "rare": 40, "ultra": 30, "legendary": 0 },
+
+        "fragment": { "common": 0, "uncommon": 0, "rare": 30, "ultra": 50, "legendary": 20 }
+
+      },
+
+      "tags": ["glitch", "fragment", "high_value"]
+
+    },
+
+    {
+
+      "id": "electro_case",
+
+      "name": "Электро кейс",
+
+      "visual": "img/cases/electro_case.jpeg",
+
+      "rarity": "ultra",
+
+      "price": 10,
+
+      "min_drops": 2,
+
+      "max_drops": 3,
+
+      "description": "Энергия и электрические разряды. Сбалансированный Ultra-кейс.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 40 },
+
+        { "type": "collectible", "chance": 35 },
+
+        { "type": "letter", "chance": 25 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 15, "uncommon": 30, "rare": 35, "ultra": 20, "legendary": 0 },
+
+        "collectible": { "common": 10, "uncommon": 30, "rare": 40, "ultra": 20, "legendary": 0 },
+
+        "letter": { "common": 20, "uncommon": 30, "rare": 40, "ultra": 10, "legendary": 0 }
+
+      },
+
+      "tags": ["electro", "energy", "spark"]
+
+    },
+
+    {
+
+      "id": "cosmic_case",
+
+      "name": "Космический кейс",
+
+      "visual": "img/cases/cosmic_case.jpeg",
+
+      "rarity": "legendary",
+
+      "price": 20,
+
+      "min_drops": 3,
+
+      "max_drops": 4,
+
+      "description": "Космическая аура, почти магический кейс. Единственный, кто может дать легендарный бафф.",
+
+      "drop_types": [
+
+        { "type": "buff", "chance": 30 },
+
+        { "type": "collectible", "chance": 30 },
+
+        { "type": "letter", "chance": 10 },
+
+        { "type": "fragment", "chance": 30 }
+
+      ],
+
+      "rarity_chances": {
+
+        "buff": { "common": 5, "uncommon": 15, "rare": 30, "ultra": 40, "legendary": 10 },
+
+        "collectible": { "common": 5, "uncommon": 10, "rare": 30, "ultra": 45, "legendary": 10 },
+
+        "letter": { "common": 0, "uncommon": 10, "rare": 30, "ultra": 50, "legendary": 10 },
+
+        "fragment": { "common": 0, "uncommon": 0, "rare": 20, "ultra": 50, "legendary": 30 }
+
+      },
+
+      "tags": ["cosmic", "legendary", "ultimate"]
+
+    }
+
+  ]
+
+}

@@ -1,0 +1,137 @@
+{
+  "collection": [
+   
+    {
+      "id": "fragment_1",
+      "name": "January Spark",
+      "type": "fragment",
+      "visual": "img/collection/fragment1.jpeg",
+      "rarity": "common",
+      "set_size": 5, 
+      "unlocks": "secret_birthday_scene", 
+      "description": "Первый осколок чего-то большого..."
+    },
+    {
+      "id": "fragment_2",
+      "name": "2 fragment",
+      "type": "fragment",
+      "visual": "img/collection/fragment2.jpeg",
+      "rarity": "common",
+      "set_size": 5,
+      "unlocks": "secret_birthday_scene",
+      "description": "Второй осколок."
+    },
+    {
+      "id": "fragment_3",
+      "name": "3 Fragment",
+      "type": "fragment",
+      "visual": "img/collection/fragment3.jpeg",
+      "rarity": "uncommon",
+      "set_size": 5,
+      "unlocks": "secret_birthday_scene",
+      "description": "Третий осколок."
+    },
+    {
+      "id": "fragment_4",
+      "name": "4 Fragment",
+      "type": "fragment",
+      "visual": "img/collection/fragment4.jpeg",
+      "rarity": "uncommon",
+      "set_size": 5,
+      "unlocks": "secret_birthday_scene",
+      "description": "Четвёртый осколок."
+    },
+    {
+      "id": "fragment_5",
+      "name": "5 Fragment",
+      "type": "fragment",
+      "visual": "img/collection/fragment5.jpeg",
+      "rarity": "rare",
+      "set_size": 5,
+      "unlocks": "secret_birthday_scene",
+      "description": "Последний, пятый осколок. Активирует финальную секретную сцену!"
+    },
+    
+    {
+      "id": "letter_1",
+      "name": "Log 0x1A",
+      "type": "letter",
+      "visual": "img/collection/letter1.jpeg",
+      "rarity": "common",
+      "set_size": 5,
+      "unlocks": "mega_buff_pack", 
+      "effect_text": "Пусть у тебя сегодня появится маленькое,но очень приятное мгновение-просто так,без причины"
+    },
+    {
+      "id": "letter_2",
+      "name": "Log 0x2B",
+      "type": "letter",
+      "visual": "img/collection/letter2.jpeg",
+      "rarity": "common",
+      "set_size": 5,
+      "unlocks": "mega_buff_pack",
+      "effect_text": "Пусть судьба аккуратно подбросит тебя пару поводов улыбнуться - она умеет,когда хочет"
+    },
+    {
+      "id": "letter_3",
+      "name": "Log 0x3C",
+      "type": "letter",
+      "visual": "img/collection/letter3.jpeg",
+      "rarity": "uncommon",
+      "set_size": 5,
+      "unlocks": "mega_buff_pack",
+      "effect_text": "Надеюсь,твой день сегодня будет легким,как утренний бриз и приятным,как любимый плейлист"
+    },
+    {
+      "id": "letter_4",
+      "name": "Log 0x4D",
+      "type": "letter",
+      "visual": "img/collection/letter4.jpeg",
+      "rarity": "rare",
+      "set_size": 5,
+      "unlocks": "mega_buff_pack",
+      "effect_text": "Пусть все мелочи твоего дня складываются так, будто специально для тебя, и пусть рядом будут те,кто это ценит...ну например я😏 "
+    },
+    {
+      "id": "letter_5",
+      "name": "Log 0x5E",
+      "type": "letter",
+      "visual": "img/collection/letter5.jpeg",
+      "rarity": "rare",
+      "set_size": 5,
+      "unlocks": "mega_buff_pack",
+      "effect_text": "Кажется сегодня воздух намного теплее...может это потому что кто-то здесь празднует особый день?"
+    },
+    
+    {
+      "id": "puzzle_1",
+      "name": "Puzzle Piece #1",
+      "type": "puzzle",
+      "visual": "img/collection/puzzle1.jpeg",
+      "rarity": "uncommon",
+      "set_size": 3, 
+      "unlocks": "3d_cake",
+      "description": "Первый элемент. Основа, или 'Ядро' будущего изображения."
+    },
+    {
+      "id": "puzzle_2",
+      "name": "Puzzle Piece #2",
+      "type": "puzzle",
+      "visual": "img/collection/puzzle2.jpeg",
+      "rarity": "uncommon",
+      "set_size": 3,
+      "unlocks": "3d_cake",
+      "description": "Второй элемент. 'Оболочка', которая придает форму."
+    },
+    {
+      "id": "puzzle_3",
+      "name": "Puzzle Piece #3",
+      "type": "puzzle",
+      "visual": "img/collection/puzzle3.jpeg",
+      "rarity": "rare",
+      "set_size": 3,
+      "unlocks": "3d_cake",
+      "description": "Последний элемент.Связывающий картинку воедино. 3D-модель разблокирована!"
+    }
+  ]
+}
