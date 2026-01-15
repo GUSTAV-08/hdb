@@ -49,7 +49,7 @@ Attempting deeper / sensitive analysis:
 　· [GLITCH] 0xF3A: <3> sequence corrupted
 [███████□□□] Affection metrics... 85%
 　· RETRY COUNT: 3
-　· [GLITCH] partial overwrite: "love?" → "l◌v◌?"
+　· [GLITCH] partial overwrite: "l#◌#?" → "l◌*◌?"
 [██████████] Affection metrics... 100%
 　· FINALIZING...
 > ERROR_404: DATA_NOT_FOUND
@@ -73,7 +73,7 @@ Attempting: EXTENDED EMOTIONAL ANALYSIS
 　· 再試行 (↯retrying...) — FAILED
 > Heart-rate fluctuations… DATA INCONCLUSIVE
 　· BPM: fluctuating between 000–∞
-　· [GLITCH] sensor overload — ♥ mod■ule o♥erheati♥ng↯↯
+　· [GLITCH] sensor overload —  mod■ule o#erheati♥ng↯↯
 　· ERROR_213: 心拍数 不安定
 　· [修復不♥能] cannot restore core pattern
 > Emotional alignment… CANNOT BE CALCULATED
