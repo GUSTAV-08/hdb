@@ -1,5 +1,5 @@
 // ====================================================================
-// finale.js: ОПТИМИЗИРОВАННАЯ ВЕРСИЯ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ
+// finale.js: ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ (NEON + MOBILE OPTIMIZED)
 // ====================================================================
 
 (() => {
@@ -26,7 +26,7 @@
     const CAMERA_POS = { x: 0, y: 1.2, z: 3.5 }; 
     const AUTO_ROTATE_SPEED = 0.001;
 
-    // Файлы (убрали frame из списка)
+    // Файлы
     const MODELS = {
         cake: 'models/3DCAKE.glb',       
         letter: 'models/letter.glb'
@@ -41,42 +41,10 @@
 
     // Конфигурация для парящих фотографий
     const PHOTO_CONFIGS = [
-        { 
-            x: -0.9, 
-            z: 0.0, 
-            y: 0.6,           // Поднимаем фото
-            rotY: 1.0, 
-            tiltX: -10,       // Легкий наклон вперед
-            maxW: 0.8,        // Размер фото
-            maxH: 1.0 
-        },
-        { 
-            x: 0.9, 
-            z: 0.2, 
-            y: 0.65, 
-            rotY: -1.0, 
-            tiltX: -10, 
-            maxW: 0.8, 
-            maxH: 1.0 
-        },
-        { 
-            x: 0.1, 
-            z: -0.95, 
-            y: 0.55, 
-            rotY: -0.0, 
-            tiltX: -10, 
-            maxW: 0.8, 
-            maxH: 1.0 
-        },
-        { 
-            x: -0.2, 
-            z: 0.85, 
-            y: 0.7, 
-            rotY: 0.0, 
-            tiltX: -10, 
-            maxW: 0.8, 
-            maxH: 1.0 
-        }
+        { x: -0.9, z: 0.0, y: 0.5, rotY: 1.5, tiltX: -0, maxW: 0.8, maxH: 1.0 },
+        { x: 0.9, z: 0.2, y: 0.5, rotY: -1.6, tiltX: -0, maxW: 0.8, maxH: 1.0 },
+        { x: 0.1, z: -0.95, y: 0.55, rotY: -0.15, tiltX: -0, maxW: 0.8, maxH: 1.0 },
+        { x: -0.2, z: 0.85, y: 0.5, rotY: 1.0, tiltX: -0, maxW: 0.8, maxH: 1.0 }
     ];
 
     // ------------------------------------------------------------------
@@ -108,14 +76,17 @@
     function init() {
         if (!container) return;
 
+        // Сцена и Туман
         scene = new THREE.Scene();
         scene.fog = new THREE.Fog(0x1a0b2e, 4, 12);
         scene.add(worldGroup);
 
+        // Камера
         camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
         camera.position.set(CAMERA_POS.x, CAMERA_POS.y, CAMERA_POS.z);
         camera.lookAt(0, 0, 0);
 
+        // Рендерер
         renderer = new THREE.WebGLRenderer({ 
             antialias: true, 
             alpha: true, 
@@ -138,7 +109,7 @@
         topLight.position.set(0, 5, 5);
         worldGroup.add(topLight);
         
-        const ambient = new THREE.AmbientLight(0xffffff, 0.8);
+        const ambient = new THREE.AmbientLight(0xffffff, 1.8);
         worldGroup.add(ambient);
 
         const pointLight = new THREE.PointLight(0xda70d6, 0.8, 10);
@@ -148,8 +119,7 @@
 
     function createGradientBackground() {
         const canvas = document.createElement('canvas');
-        canvas.width = 1; 
-        canvas.height = 512;
+        canvas.width = 1; canvas.height = 512;
         const ctx = canvas.getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 512);
         gradient.addColorStop(0, '#050208');   
@@ -163,98 +133,88 @@
     }
 
     // ------------------------------------------------------------------
-    // 4. ЗАГРУЗКА ОБЪЕКТОВ (ОПТИМИЗИРОВАНО)
+    // 4. ЗАГРУЗКА ОБЪЕКТОВ
     // ------------------------------------------------------------------
     function loadObjects() {
-        // Стол
+        // 1. Стол
         const tableGeo = new THREE.CylinderGeometry(TABLE_RADIUS, TABLE_RADIUS, 0.05, 64);
-        const tableMat = new THREE.MeshStandardMaterial({ 
-            color: 0x111111, 
-            roughness: 0.8 
-        });
+        const tableMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 });
         const table = new THREE.Mesh(tableGeo, tableMat);
         table.position.y = -0.025;
         worldGroup.add(table);
 
-        // Торт
+        // 2. Торт
         gltfLoader.load(MODELS.cake, (g) => {
             const cake = g.scene;
             cake.scale.setScalar(CAKE_SCALE);
             cake.position.set(0, 0, 0);
             worldGroup.add(cake);
-        }, undefined, (error) => {
-            console.error('Ошибка загрузки торта:', error);
-        });
+        }, undefined, (err) => console.error('Ошибка торта:', err));
 
-        // Парящие фотографии (БЕЗ РАМОК)
+        // 3. Парящие фото (запускаем цикл)
         PHOTO_CONFIGS.forEach((cfg, i) => {
             if (i < PHOTO_PATHS.length) {
                 addFloatingPhoto(PHOTO_PATHS[i], cfg);
             }
         });
 
-        // Письмо
+        // 4. Письмо с НЕОНОВОЙ ОБВОДКОЙ
         gltfLoader.load(MODELS.letter, (g) => {
             letterMesh = g.scene;
+            
+            // Добавляем обводку
+            letterMesh.traverse((child) => {
+                if (child.isMesh) {
+                    const edges = new THREE.EdgesGeometry(child.geometry);
+                    const lineMat = new THREE.LineBasicMaterial({ 
+                        color: 0x00ffe1, // Цвет неона (бирюзовый)
+                        transparent: true, 
+                        opacity: 0.5 
+                    });
+                    const outline = new THREE.LineSegments(edges, lineMat);
+                    child.add(outline);
+                }
+            });
+
             letterMesh.scale.setScalar(LETTER_SCALE);
             letterMesh.position.set(0.3, -0.35, 0.2);
             worldGroup.add(letterMesh);
-        }, undefined, (error) => {
-            console.error('Ошибка загрузки письма:', error);
-        });
+        }, undefined, (err) => console.error('Ошибка письма:', err));
     }
 
-    /**
-     * Создает парящую фотографию без рамки
-     * @param {string} path - Путь к изображению
-     * @param {object} cfg - Конфигурация позиции и размера
-     */
+    // Вспомогательная функция для фото (теперь она снаружи loadObjects)
     function addFloatingPhoto(path, cfg) {
         textureLoader.load(path, (tex) => {
             tex.colorSpace = THREE.SRGBColorSpace;
-            
-            // Рассчитываем размеры с сохранением пропорций
             const aspect = tex.image.width / tex.image.height;
             let w = cfg.maxW;
             let h = cfg.maxW / aspect;
-            
-            if (h > cfg.maxH) { 
-                h = cfg.maxH; 
-                w = h * aspect; 
-            }
+            if (h > cfg.maxH) { h = cfg.maxH; w = h * aspect; }
 
-            // ОПТИМИЗИРОВАННЫЙ МАТЕРИАЛ (MeshBasicMaterial)
+            // Оптимизированный материал
             const material = new THREE.MeshBasicMaterial({ 
                 map: tex, 
-                side: THREE.DoubleSide,      // Двустороннее отображение
+                side: THREE.DoubleSide, 
                 transparent: true,
-                opacity: 0.95,               // Легкая прозрачность для эффекта парения
+                opacity: 0.95,
                 depthWrite: true
             });
 
-            // Создаем плоскость с фото
-            const photoMesh = new THREE.Mesh(
-                new THREE.PlaneGeometry(w, h), 
-                material
-            );
-
-            // Позиционирование
+            const photoMesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), material);
             photoMesh.position.set(cfg.x, cfg.y, cfg.z);
             photoMesh.rotation.y = cfg.rotY;
             photoMesh.rotation.x = THREE.MathUtils.degToRad(cfg.tiltX);
 
-            // Добавляем легкую анимацию покачивания (опционально)
+            // Анимация покачивания
             photoMesh.userData.floatOffset = Math.random() * Math.PI * 2;
             photoMesh.userData.floatSpeed = 0.5 + Math.random() * 0.5;
             
             worldGroup.add(photoMesh);
-        }, undefined, (error) => {
-            console.error('Ошибка загрузки фото:', path, error);
-        });
+        }, undefined, (err) => console.error('Ошибка фото:', path, err));
     }
 
     // ------------------------------------------------------------------
-    // 5. УПРАВЛЕНИЕ И МОДАЛКА
+    // 5. УПРАВЛЕНИЕ И ИНТЕРФЕЙС
     // ------------------------------------------------------------------
     function checkIntersection(x, y) {
         if (!letterMesh) return false;
@@ -278,11 +238,8 @@
             pointerStartY = e.clientY;
             prevPointerX = e.clientX;
             
-            // Попытка запустить аудио
             const audio = document.getElementById('background-audio');
-            if (audio && audio.paused) {
-                audio.play().catch(() => {});
-            }
+            if (audio && audio.paused) audio.play().catch(() => {});
         });
 
         window.addEventListener('pointermove', (e) => {
@@ -300,15 +257,12 @@
                 openModal();
             }
             
-            // Возобновляем автоповорот через 3 секунды
             setTimeout(() => { 
                 if (!isPointerDown) autoRotateEnabled = true; 
             }, 3000);
         });
 
-        if (closeButton) {
-            closeButton.addEventListener('click', closeModal);
-        }
+        if (closeButton) closeButton.addEventListener('click', closeModal);
     }
 
     function openModal() {
@@ -336,17 +290,16 @@
     }
 
     // ------------------------------------------------------------------
-    // 6. АНИМАЦИЯ С ОПЦИОНАЛЬНЫМ ПОКАЧИВАНИЕМ ФОТО
+    // 6. АНИМАЦИЯ
     // ------------------------------------------------------------------
     function animate() {
         requestAnimationFrame(animate);
         
-        // Автоповорот сцены
         if (autoRotateEnabled) {
             worldGroup.rotation.y += AUTO_ROTATE_SPEED;
         }
 
-        // Легкое покачивание парящих фотографий (опционально)
+        // Покачивание фото
         const time = Date.now() * 0.001;
         worldGroup.children.forEach(child => {
             if (child.userData.floatOffset !== undefined) {
@@ -357,8 +310,5 @@
         renderer.render(scene, camera);
     }
 
-    // ------------------------------------------------------------------
-    // 7. ЗАПУСК
-    // ------------------------------------------------------------------
     document.addEventListener('DOMContentLoaded', init);
 })();
