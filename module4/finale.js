@@ -1,5 +1,5 @@
 // ====================================================================
-// finale.js: ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ (NEON + MOBILE OPTIMIZED)
+// finale.js: ФИНАЛЬНАЯ РАБОЧАЯ ВЕРСИЯ (NEON + CRYSTAL REDIRECT)
 // ====================================================================
 
 (() => {
@@ -18,18 +18,20 @@
     Спасибо тебе вообще за всё. Благодаря тебе я взялся за эти проекты и понял, что мне это реально нравится. Набрался практики, разобрался, куда хочу двигаться дальше.
     
     Но главное не это. Спасибо просто за то, что ты есть. Время проведённое с тобой реально интересное и тёплое. Ну и просто... ты классная.
-    Пусть у тебя будет отличный год.`;
+    Let it be a great year ahead!`;
 
     const TABLE_RADIUS = 1.2;
     const CAKE_SCALE = 0.0075;
     const LETTER_SCALE = 0.15;
+    const CRYSTAL_SCALE = 0.1; // Масштаб твоего кристалла
     const CAMERA_POS = { x: 0, y: 1.2, z: 3.5 }; 
     const AUTO_ROTATE_SPEED = 0.001;
 
     // Файлы
     const MODELS = {
         cake: 'models/3DCAKE.glb',       
-        letter: 'models/letter.glb'
+        letter: 'models/letter.glb',
+        crystall: 'models/crystall.glb' // Твой кристалл
     };
 
     const PHOTO_PATHS = [
@@ -59,6 +61,7 @@
     let scene, camera, renderer;
     const worldGroup = new THREE.Group(); 
     let letterMesh = null;
+    let crystallMesh = null; // Переменная для хранения кристалла
     let autoRotateEnabled = true;
     let typingTimeout;
 
@@ -105,17 +108,25 @@
     }
 
     function setupLights() {
-        const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
-        topLight.position.set(0, 5, 5);
-        worldGroup.add(topLight);
-        
-        const ambient = new THREE.AmbientLight(0xffffff, 1.8);
-        worldGroup.add(ambient);
+    // Свет сверху
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    topLight.position.set(0, 5, 0);
+    worldGroup.add(topLight);
+    
+    // Свет спереди-слева (подсветит боковые грани)
+    const sideLight = new THREE.DirectionalLight(0x8A2BE2, 1.5);
+    sideLight.position.set(-5, 2, 5);
+    worldGroup.add(sideLight);
 
-        const pointLight = new THREE.PointLight(0xda70d6, 0.8, 10);
-        pointLight.position.set(-2, 2, 2);
-        worldGroup.add(pointLight);
-    }
+    // Свет сзади-справа (создаст контурные блики)
+    const backLight = new THREE.DirectionalLight(0x4B0082, 1.5);
+    backLight.position.set(5, 2, -5);
+    worldGroup.add(backLight);
+    
+    // Мягкий заполняющий свет
+    const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+    worldGroup.add(ambient);
+}
 
     function createGradientBackground() {
         const canvas = document.createElement('canvas');
@@ -151,7 +162,7 @@
             worldGroup.add(cake);
         }, undefined, (err) => console.error('Ошибка торта:', err));
 
-        // 3. Парящие фото (запускаем цикл)
+        // 3. Парящие фото
         PHOTO_CONFIGS.forEach((cfg, i) => {
             if (i < PHOTO_PATHS.length) {
                 addFloatingPhoto(PHOTO_PATHS[i], cfg);
@@ -162,14 +173,13 @@
         gltfLoader.load(MODELS.letter, (g) => {
             letterMesh = g.scene;
             
-            // Добавляем обводку
             letterMesh.traverse((child) => {
                 if (child.isMesh) {
                     const edges = new THREE.EdgesGeometry(child.geometry);
                     const lineMat = new THREE.LineBasicMaterial({ 
-                        color: 0x00ffe1, // Цвет неона (бирюзовый)
+                        color: 0x00ffe7, 
                         transparent: true, 
-                        opacity: 0.5 
+                        opacity: 0.2 
                     });
                     const outline = new THREE.LineSegments(edges, lineMat);
                     child.add(outline);
@@ -180,9 +190,29 @@
             letterMesh.position.set(0.3, -0.35, 0.2);
             worldGroup.add(letterMesh);
         }, undefined, (err) => console.error('Ошибка письма:', err));
-    }
 
-    // Вспомогательная функция для фото (теперь она снаружи loadObjects)
+        // 5. Загрузка КРИСТАЛЛА со светящимся неоновым материалом
+        gltfLoader.load(MODELS.crystall, (g) => {
+    crystallMesh = g.scene;
+
+    crystallMesh.traverse((child) => {
+        if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({
+                color: 0xB3022A,        
+                emissive: 0x72021B,      
+                emissiveIntensity: 0.4,  // 
+                roughness: 0.5,          //
+                metalness: 1.1,          // 
+                side: THREE.DoubleSide   // 
+            });
+        }
+    });
+
+    crystallMesh.scale.setScalar(CRYSTAL_SCALE);
+    crystallMesh.position.set(-0.1, 0.1, 0.8);
+    worldGroup.add(crystallMesh);
+}, undefined, (err) => console.error('Ошибка кристалла:', err));
+
     function addFloatingPhoto(path, cfg) {
         textureLoader.load(path, (tex) => {
             tex.colorSpace = THREE.SRGBColorSpace;
@@ -191,7 +221,6 @@
             let h = cfg.maxW / aspect;
             if (h > cfg.maxH) { h = cfg.maxH; w = h * aspect; }
 
-            // Оптимизированный материал
             const material = new THREE.MeshBasicMaterial({ 
                 map: tex, 
                 side: THREE.DoubleSide, 
@@ -205,7 +234,6 @@
             photoMesh.rotation.y = cfg.rotY;
             photoMesh.rotation.x = THREE.MathUtils.degToRad(cfg.tiltX);
 
-            // Анимация покачивания
             photoMesh.userData.floatOffset = Math.random() * Math.PI * 2;
             photoMesh.userData.floatSpeed = 0.5 + Math.random() * 0.5;
             
@@ -213,17 +241,11 @@
         }, undefined, (err) => console.error('Ошибка фото:', path, err));
     }
 
-    // ------------------------------------------------------------------
-    // 5. УПРАВЛЕНИЕ И ИНТЕРФЕЙС
-    // ------------------------------------------------------------------
-    function checkIntersection(x, y) {
-        if (!letterMesh) return false;
-        pointer.x = (x / window.innerWidth) * 2 - 1;
-        pointer.y = -(y / window.innerHeight) * 2 + 1;
-        raycaster.setFromCamera(pointer, camera);
-        return raycaster.intersectObject(letterMesh, true).length > 0;
     }
 
+    // ------------------------------------------------------------------
+    // 5. УПРАВЛЕНИЕ И ИНТЕРФЕЙС (RAYCASTING РАЗДЕЛЕН)
+    // ------------------------------------------------------------------
     function addEventListeners() {
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -253,8 +275,29 @@
             isPointerDown = false;
             
             const dist = Math.hypot(e.clientX - pointerStartX, e.clientY - pointerStartY);
-            if (dist < 10 && checkIntersection(e.clientX, e.clientY)) {
-                openModal();
+            
+            // Если это был чистый клик/тап (а не свайп для вращения сцены)
+            if (dist < 10) {
+                pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+                pointer.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(pointer, camera);
+
+                // 1. Проверяем клик по КРИСТАЛЛУ -> Редирект на 5 страницу
+                if (crystallMesh) {
+                    const intersectsCrystal = raycaster.intersectObject(crystallMesh, true);
+                    if (intersectsCrystal.length > 0) {
+                        window.location.href = 'gate.html'; // Ссылка на твой финальный сайт признания
+                        return; // Выходим, чтобы другие триггеры не сработали
+                    }
+                }
+
+                // 2. Проверяем клик по ПИСЬМУ -> Открытие модалки
+                if (letterMesh) {
+                    const intersectsLetter = raycaster.intersectObject(letterMesh, true);
+                    if (intersectsLetter.length > 0) {
+                        openModal();
+                    }
+                }
             }
             
             setTimeout(() => { 
@@ -290,7 +333,7 @@
     }
 
     // ------------------------------------------------------------------
-    // 6. АНИМАЦИЯ
+    // 6. АНИМАЦИЯ (ВРАЩЕНИЕ И ПУЛЬСАЦИЯ КРИСТАЛЛА)
     // ------------------------------------------------------------------
     function animate() {
         requestAnimationFrame(animate);
@@ -298,6 +341,27 @@
         if (autoRotateEnabled) {
             worldGroup.rotation.y += AUTO_ROTATE_SPEED;
         }
+
+        // Анимация самого кристалла (Автономное вращение + Пульсация)
+        // Анимация самого кристалла (Автономное вращение + Пульсация)
+if (crystallMesh) {
+    // Вращаем локальный меш внутри его собственной системы координат
+    crystallMesh.traverse((child) => {
+        if (child.isMesh) {
+            child.rotation.y += 0.01; // Вращение вокруг своей оси
+        }
+    });
+
+    // Магия пульсации (оставляем как было, это будет красиво подсвечивать грани на столе)
+    const timeSeconds = Date.now() * 0.002; 
+    const pulseIntensity = 1.2 + Math.sin(timeSeconds) * 0.6; 
+
+    crystallMesh.traverse((child) => {
+        if (child.isMesh && child.material) {
+            child.material.emissiveIntensity = pulseIntensity;
+        }
+    });
+}
 
         // Покачивание фото
         const time = Date.now() * 0.001;

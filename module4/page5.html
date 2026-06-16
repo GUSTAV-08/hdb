@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Финал</title>
+    <script>
+        // ЗАЩИТА: Проверка прохождения Врат Памяти перед рендерингом страницы
+        if (sessionStorage.getItem("final_gate") !== "opened") {
+            window.location.href = "page4_5.html";
+        }
+    </script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh; /* Динамическая высота для мобильных браузеров */
+            overflow: hidden;
+            background: linear-gradient(180deg, #050208 0%, #1a0b2e 60%, #4a0314 100%);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 50%; left: 50%;
+            width: 150vw; height: 150vw;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(179,2,42,0.08) 0%, rgba(26,11,46,0) 70%);
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+            transition: background 0.5s ease, transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        /* Интерактивные изменения свечения при наведении на кнопки */
+        .ambient-glow.glow-primary {
+            background: radial-gradient(circle, rgba(179,2,42,0.18) 0%, rgba(26,11,46,0) 70%);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .ambient-glow.glow-secondary {
+            background: radial-gradient(circle, rgba(114,2,27,0.14) 0%, rgba(26,11,46,0) 70%);
+            transform: translate(-50%, -50%) scale(1.02);
+        }
+
+        @keyframes pulseGlow {
+            0% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .screen-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            padding: 20px;
+        }
+
+        /* КОНВЕРТ */
+        .envelope-wrapper {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background-color: #5c0115;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(179, 2, 42, 0.2);
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .envelope-wrapper:hover { transform: scale(1.03) translateY(-5px); }
+
+        .envelope-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            z-index: 2;
+            border-width: 90px 140px 90px 140px;
+            border-style: solid;
+            border-color: transparent #7a021c #6e0118 #7a021c;
+            border-radius: 4px;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 0; height: 0;
+            border-width: 95px 140px 0 140px;
+            border-style: solid;
+            border-color: #b3022a transparent transparent transparent;
+            transform-origin: top center;
+            transition: transform 0.4s ease, z-index 0.2s;
+            z-index: 4;
+        }
+
+        .wax-seal {
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 44px; height: 44px;
+            background: radial-gradient(circle, #b3022a 0%, #72021b 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 10px rgba(179,2,42,0.6);
+            display: flex; justify-content: center; align-items: center;
+            transition: transform 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
+        }
+
+        .wax-seal::after {
+            content: '♥'; color: #ffb3c1; font-size: 18px; text-shadow: 0 0 5px #b3022a;
+        }
+
+        /* Эффект раскола печати при двойном клике */
+        .wax-seal.shattered {
+            transform: translate(-50%, -50%) scale(1.5) rotate(25deg);
+            opacity: 0;
+            filter: blur(4px) contrast(1.5);
+        }
+
+        .hint-text {
+            position: absolute;
+            bottom: -50px; width: 100%; text-align: center;
+            font-size: 0.9rem; color: #b3022a;
+            text-shadow: 0 0 8px rgba(179,2,42,0.4);
+            letter-spacing: 1px;
+            animation: pulseText 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseText { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        .envelope-wrapper.open .envelope-flap { transform: rotateX(180deg); z-index: 1; }
+        .envelope-wrapper.open .wax-seal:not(.shattered) { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+        .envelope-wrapper.fade-out { transform: scale(0.8) translateY(100px); opacity: 0; pointer-events: none; }
+
+        /* КОНТЕЙНЕР ЛИСТА */
+        .letter-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+            display: flex; flex-direction: column;
+            padding: 25px 20px;
+        }
+
+        .letter-container.active { opacity: 1; visibility: visible; }
+
+        .letter-paper {
+            flex: 1;
+            background: linear-gradient(180deg, #12061c 0%, #0c0414 100%);
+            border: 1px solid rgba(179, 2, 42, 0.2);
+            border-radius: 12px;
+            padding: 30px 24px;
+            overflow-y: auto;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #b3022a #0c0414;
+            cursor: pointer;
+        }
+
+        .letter-paper::-webkit-scrollbar { width: 5px; }
+        .letter-paper::-webkit-scrollbar-track { background: #0c0414; }
+        .letter-paper::-webkit-scrollbar-thumb { background-color: #b3022a; border-radius: 10px; }
+
+        .letter-text {
+            font-family: "Georgia", serif;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: #e6e6e6;
+        }
+
+        .letter-text p, .letter-text .section-title, .letter-text .signature {
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        /* Класс мгновенного проявления при тапе */
+        .letter-text p.instant, .letter-text .section-title.instant, .letter-text .signature.instant {
+            transition: none !important;
+        }
+
+        .letter-text p.visible, .letter-text .section-title.visible, .letter-text .signature.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .letter-text .section-title {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-size: 1.2rem; color: #b3022a;
+            margin-top: 2.5rem; margin-bottom: 1rem;
+            font-weight: 600; letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(179,2,42,0.2);
+        }
+
+        .letter-text .signature {
+            margin-top: 2.5rem; font-style: italic; text-align: right;
+            color: #b3022a; font-size: 1.2rem; margin-bottom: 0;
+        }
+
+        /* КЛАССЫ ЭФФЕКТНЫХ ВЫДЕЛЕНИЙ СЛОВ */
+        .hl-elvira {
+            color: #ffb3d9; /* Нежный розово-лиловый оттенок для её фраз */
+            text-shadow: 0 0 8px rgba(255, 179, 217, 0.4);
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        .hl-emotion {
+            color: #ff3b61; /* Выразительный рубиново-красный для чувств */
+            text-shadow: 0 0 8px rgba(255, 59, 97, 0.5);
+            font-weight: 600;
+        }
+
+        .hl-bright {
+            color: #ff5e61; /* Кристально-белый для искренности */
+            text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+            font-weight: 500;
+        }
+
+        /* Финальное текстовое примечание перед кнопками */
+        .thank-you-note {
+            text-align: center;
+            font-size: 0.95rem;
+            color: #8a8a8a;
+            margin-top: 3rem;
+            margin-bottom: 1rem;
+            font-style: italic;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .thank-you-note.visible {
+            opacity: 1; transform: translateY(0);
+        }
+
+        /* БЛОК КНОПОК */
+        .action-block {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(179, 2, 42, 0.15);
+            display: flex; flex-direction: column; gap: 12px;
+            opacity: 0; transform: translateY(20px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .action-block.visible { opacity: 1; transform: translateY(0); }
+
+        .action-btn {
+            width: 100%; padding: 14px; border-radius: 8px; border: none;
+            font-size: 0.95rem; font-weight: 600; cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #b3022a 0%, #72021b 100%); color: #ffffff;
+            box-shadow: 0 4px 15px rgba(179, 2, 42, 0.3);
+        }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .btn-secondary {
+            background: rgba(26, 11, 46, 0.6); color: #a0a0a0; border: 1px solid rgba(179, 2, 42, 0.3);
+        }
+        .btn-secondary:active { background: rgba(179, 2, 42, 0.1); color: #ffffff; }
+
+        /* МОДАЛЬНОЕ ОКНО ФИДБЕКА */
+        .feedback-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 2, 8, 0.95); z-index: 100;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 20px;
+        }
+
+        .feedback-modal.active { opacity: 1; visibility: visible; }
+
+        .modal-content {
+            background: #160721; border: 1px solid #b3022a; border-radius: 12px;
+            padding: 30px 24px; text-align: center; max-width: 360px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); transform: scale(0.9);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .feedback-modal.active .modal-content { transform: scale(1); }
+        .modal-content h3 { color: #b3022a; margin-bottom: 12px; font-size: 1.3rem; }
+        .modal-content p { font-size: 0.95rem; line-height: 1.5; color: #cccccc; margin-bottom: 20px; }
+        
+        /* Стили для лоадера при отправке формы */
+        .modal-loader {
+            display: inline-block;
+            width: 24px; height: 24px;
+            border: 3px solid rgba(179,2,42,0.3);
+            border-radius: 50%;
+            border-top-color: #b3022a;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 15px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+
+<audio id="bg-music" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+
+    <div class="ambient-glow" id="ambientGlow"></div>
+
+    <form id="hiddenForm" action="https://formspree.io/f/xrevdabl" method="POST" style="display:none;">
+        <input type="text" name="answer" id="formAnswer">
+        <input type="text" name="timestamp" id="formTime">
+    </form>
+
+    <div class="screen-container">
+        
+        <div class="envelope-wrapper" id="envelope">
+            <div class="envelope-flap"></div>
+            <div class="wax-seal" id="waxSeal"></div>
+            <div class="hint-text">НАЖМИ, ЧТОБЫ ОТКРЫТЬ</div>
+        </div>
+
+        <div class="letter-container" id="letterContainer">
+            <div class="letter-paper" id="scrollContainer">
+                <div class="letter-text" id="textBlock">
+    <p>Привет, Эльвира.</p>
+    <p>Я долго думал, стоит ли вообще писать это. Сначала откладывал из-за <span class="hl-emotion">страха отказа</span>, потом из-за слухов и неловкости. А потом понял: молчание — это, наверное, самое худшее, что я могу сделать. Поэтому хочу сказать прямо.</p>
+    <p>Ты мне <span class="hl-emotion">нравишься</span>. Уже давно. Не пару недель и не из-за какого-то импульса.</p>
+    
+    <div class="section-title">С чего всё начиналось</div>
+    <p>В 9 классе у тебя сложилось плохое впечатление обо мне. И это было справедливо. Я был <span class="hl-emotion">нестабилен, закрыт</span>, часто реагировал странно. Я не оправдываюсь — просто признаю. Но именно тогда произошли моменты, которые всё изменили.</p>
+    <p>Первый — история с Ифтаром. Когда меня начали публично спрашивать, почему я не пришёл, я <span class="hl-emotion">растерялся и молчал</span>. Ты спокойно ответила за меня. Без показухи , просто потому что это было правильно. Когда кто-то спросил, зачем ты меня защищаешь — я вообще не смог ничего сказать , но ты <span class="hl-bright">классно заставил его замолчать</span>. Но именно тогда ты впервые перестала быть для меня обычной одноклассницей.</p>
+    <p>Потом был осенний бал. Ты сшила костюм сама, с нуля. Класс провалил выступление, и всё это <span class="hl-emotion">обесценилось за один вечер</span>. Я помню, как ты просто села и <span class="hl-emotion">замкнулась</span>. Без истерик, без жалоб. Как будто внутри резко <span class="hl-emotion">выключили свет</span>. Я хотел сказать что-то поддерживающее, но ни одна фраза не казалась <span class="hl-bright">искренней</span>. И я просто стоял рядом, молча. Это чувство — <span class="hl-emotion">быть рядом и не суметь помочь</span> — очень неприятное чувство.</p>
+    <p>В 10 классе я осознанно решил измениться, и я благодарен, что ты дала мне <span class="hl-bright">шанс</span> быть увиденным заново. А в 11 классе ты сказала фразу про поступление: <span class="hl-elvira" data-speed="50">"Лучше пострадать год, чем жалеть всю жизнь."</span> Ты не пыталась меня учить — просто жила так. И я увидел, что это работает.</p>
+
+    <div class="section-title">Этот год</div>
+    <p>Но по-настоящему всё изменилось в этом году. Наша история перестала быть просто наблюдениями со стороны — она стала <span class="hl-bright">живой</span>.</p>
+    <p>Всё началось с декабрьского разговора — автобус, улица, подъезд. Политика, жизнь, планы, всякая ерунда. Ты была <span class="hl-bright">живой и вовлечённой</span>. Я тогда впервые поймал себя на мысли, что вообще <span class="hl-emotion">не хочу, чтобы тот вечер заканчивался</span>.</p>
+    <p>Потом был сайт к твоему дню рождения. Я делал его ночами, переписывал код, <span class="hl-emotion">сомневался</span>. А твоя реакция в два часа ночи — <span class="hl-elvira">"Я офигела"</span>, <span class="hl-elvira">"Это очень мило"</span>, <span class="hl-elvira">"Я приклею это себе на лоб"</span> — показала мне тебя настоящую.</p>
+    <p>А самое главное случилось после ЕНТ. Ты дождалась меня. Первой <span class="hl-bright">протянула руку</span> и сказала: <span class="hl-elvira" data-pause="800">"Пойдём."</span> Мы шли, говорили обо всём — про результаты, университеты, гитару, Цоя, про семью, в общем, про многие темы. Потом сидели в беседке у твоего подъезда и ели мороженое. Обычно я быстро устаю от долгого общения, но в тот день <span class="hl-bright">время вообще перестало ощущаться</span>. Я просто поймал себя на мысли, что мы говорим уже несколько часов, а мне всё ещё <span class="hl-emotion">не хочется заканчивать этот диалог</span>.</p>
+    <p>Я помню, как в какой-то момент ты <span class="hl-emotion">поправила мне волосы</span>, и мы несколько минут просто <span class="hl-emotion">держали зрительный контакт</span>. В ту секунду, когда ты сама дождалась меня после теста и увела за собой со словом <span class="hl-elvira">"пойдём"</span>, я почувствовал то, чего не ожидал. Я поймал себя на мысли, что в этом году я, наверное, заново <span class="hl-emotion" data-speed="60">влюбился</span> в тебя. Это не было похоже на чувства из 9 класса — это ощущение было гораздо <span class="hl-bright">осознаннее и глубже</span>.</p>
+    <p>Потом я тогда загонял себя планами пахать всё лето, но ты сказала: <span class="hl-elvira">"Найди время для себя, первый курс пройдёт спокойно."</span> Я послушал тебя , и думаю это было <span class="hl-bright">правильным решением</span>.</p>
+    <p>Потом был разговор после математики. Без всякого повода — я просто нашёл тебя, и мы снова говорили часами. Про кошек, про то, что мы оба любим холодную воду и прохладу, про детство. Разговор рождался сам. Как тогда, когда я тупанул и чуть не ушёл к твоему подъезду, думая, что прогулка закончилась, а ты мне: <span class="hl-elvira">"Ты куда вообще? Назад вернись"</span> было для меня <span class="hl-bright">очень теплым и забавным</span>. И мы пошли дальше. Именно этот год я запомню больше всего. То ощущение, что рядом с тобой <span class="hl-bright">диалог никогда не нужно тащить силой</span>.</p>
+
+    <div class="section-title">Что меня привлекает</div>
+    <p>Не какие-то шаблонные фразы, а именно...</p>
+    <p>Ты меня <span class="hl-emotion">очень привлекаешь</span>. Твои <span class="hl-bright">карие глаза</span>, <span class="hl-bright">настоящая улыбка</span> и голос, который всегда приятно слушать, — всё это <span class="hl-emotion">цепляет</span>. Особенно мне нравится тот <span class="hl-bright">свет внутри тебя</span>, который появляется, когда ты говоришь о том, что тебе важно. Даже моменты <span class="hl-emotion">усталости и тишины</span> — это тоже часть тебя, и я принимаю их. Ты <span class="hl-bright">добрая, искренняя</span> и удивительно <span class="hl-bright">настоящая</span> — именно это делает тебя особенной.</p>
+    <p>Но дело не только во внешности. Меня <span class="hl-bright">восхищает</span> твоя целеустремлённость и честность. То, как ты умеешь слушать — <span class="hl-bright">внимательно, по-настоящему</span>, а не просто дожидаясь своей очереди. Ты не притворяешься, и в этом есть сила. А ещё мне нравится, что у тебя есть свои принципы и желания, которые делают тебя уникальной и неповторимой.</p>
+    
+    <div class="section-title">Почему всё серьёзно</div>
+    <p>В 9 классе была идеализация. В 10 очки начали спадать. В 11 я увидел тебя обычным живым человеком — со слабостями, резкостью, усталостью, закрытостью. И чувства не исчезли, а наоборот стали <span class="hl-bright">спокойнее и глубже</span>. Я не люблю образ. Я <span class="hl-emotion">люблю человека</span>.</p>
+    <p>До тебя я никогда <span class="hl-emotion">не испытывал ничего похожего</span>. Я смотрел на отношения вокруг и не пониман, что люди там находят. А потом появилась ты — и каким-то образом <span class="hl-emotion">пробила эту стену</span>.</p>
+    <p>Ты сильно на меня повлияла. Из-за тебя я начал серьёзнее относиться к себе, к своим проектам, к целям. Не чтобы произвести впечатление, а потому что впервые <span class="hl-emotion">захотел стать человеком, которого я сам смогу уважать</span>. Твоя недавняя фраза: <span class="hl-elvira" data-speed="50">"Для этих конкурентов ты тоже конкурент. Но это ли тебя должно опускать?"</span> — теперь со мной надолго. Ты дала мне мощный пинок в правильном направлении, но иду я, конечно, сам.</p>
+    <p>С большинством людей я ношу маску. Слежу за словами, за тем, как выгляжу. Это <span class="hl-emotion">выматывает</span>. Но рядом с тобой этого нет. Наверное, потому что ты не требуешь, чтобы я был кем-то другим, и рядом с тобой я <span class="hl-bright">не чувствую необходимости постоянно контролировать</span> каждое своё слово. Я не вижу нужды притворяться. Это редкость, и именно это для меня <span class="hl-bright">больший кайф</span>.</p>
+
+    <div class="section-title">Про будущее и мои желания</div>
+    <p>Я знаю, насколько для тебя важны учёба, цели и поступление. Я не хочу становиться препятствием или источником давления. Твои цели — это твоя жизнь, и для меня важно, чтобы ты была счастлива, <span class="hl-emotion">даже если это счастье будет не со мной</span>. Если ты скажешь "не сейчас" — я пойму и <span class="hl-bright">приму это</span>.</p>
+    <p>Мне искренне интересно, какими мы станем через несколько лет. Мне хочется видеть, как ты будешь идти к своим целям, как поступишь, и хочется <span class="hl-bright">быть рядом</span>, когда у тебя всё начнёт получаться.</p>
+    <p>Но я хочу быть честным. Я не хочу просто оставаться в прошлом как одноклассник. Мне бы хотелось попробовать построить с тобой <span class="hl-emotion">что-то большее, чем просто дружбу</span> или школьное общение. Спокойно, уверенно и без спешки.</p>
+    <p>Мне не нужен ответ прямо сейчас. Подумай. Дай знать, когда будешь готова. Единственное, о чём прошу: будь <span class="hl-bright" data-speed="60">честной</span>. Даже если правда будет <span class="hl-emotion">больно</span>.</p>
+    <p>Я не жалею, что написал это. Теперь я спокоен — потому что честен перед тобой и перед собой. Решение за тобой. И каким бы оно ни было — я <span class="hl-bright">уважаю тебя</span>.</p>
+    
+    <div class="signature">Gustav</div>
+</div>
+
+                <div class="thank-you-note" id="thankYouNote">Спасибо, что дочитала до конца.</div>
+
+                <div class="action-block" id="actions">
+                    <button class="action-btn btn-primary" id="btnReady">Я готова поговорить об этом</button>
+                    <button class="action-btn btn-secondary" id="btnTime">Мне нужно время подумать</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="feedback-modal" id="modal">
+        <div class="modal-content">
+            <div id="modalLoadingIcon" class="modal-loader" style="display: none;"></div>
+            <h3 id="modalTitle"></h3>
+            <p id="modalText"></p>
+            <button class="action-btn btn-primary" id="modalCloseBtn" style="padding: 10px; display: none;" onclick="closeModal()">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const waxSeal = document.getElementById('waxSeal');
+        const letterContainer = document.getElementById('letterContainer');
+        const scrollContainer = document.getElementById('scrollContainer');
+        const paragraphs = document.querySelectorAll('.letter-text > p, .letter-text > .section-title, .letter-text > .signature');
+        const thankYouNote = document.getElementById('thankYouNote');
+        const actionBlock = document.getElementById('actions');
+        const modal = document.getElementById('modal');
+        const ambientGlow = document.getElementById('ambientGlow');
+
+        let paragraphTokens = []; // Хранилище распарсенных символов
+        let originalTexts = [];    // Оригинальный полный HTML
+        let currentIdx = 0;
+        let charIdx = 0;
+        let isWritingActive = false;
+        let isCharTyping = false; 
+        let charTimerId = null;
+        
+        // Переменные для унифицированной фильтрации скролла/тапа
+        let pointerStartX = 0;
+        let pointerStartY = 0;
+        let lastEnvelopeClick = 0;
+
+        // Парсинг структуры абзаца для сохранения всех вложенных тегов и их кастомных настроек
+        function parseParagraph(element) {
+            let tokens = [];
+            function walk(node, currentClass, currentSpeed, currentPause) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    let text = node.nodeValue;
+                    for (let i = 0; i < text.length; i++) {
+                        tokens.push({
+                            char: text.charAt(i),
+                            className: currentClass,
+                            speed: currentSpeed,
+                            pauseAfter: (i === text.length - 1) ? currentPause : 0
+                        });
+                    }
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (node.tagName === 'BR') {
+                        tokens.push({ char: '<br>', className: '', speed: null, pauseAfter: 0 });
+                    } else {
+                        let cls = node.className ? node.className : currentClass;
+                        let speed = node.hasAttribute('data-speed') ? parseInt(node.getAttribute('data-speed')) : currentSpeed;
+                        let pause = node.hasAttribute('data-pause') ? parseInt(node.getAttribute('data-pause')) : 0;
+                        
+                        node.childNodes.forEach(child => walk(child, cls, speed, pause));
+                    }
+                }
+            }
+            element.childNodes.forEach(child => walk(child, '', null, 0));
+            return tokens;
+        }
+
+        // Подготовка к работе
+        paragraphs.forEach((p) => {
+            originalTexts.push(p.innerHTML);
+            paragraphTokens.push(parseParagraph(p));
+            p.innerHTML = ''; // Очищаем для эффекта печати
+        });
+
+        // Унифицированная функция открытия конверта (обычная или супер-быстрая при dblclick)
+        function triggerEnvelopeOpen(isFast = false) {
+            if (envelope.classList.contains('open')) return;
+            
+            if (isFast) {
+                waxSeal.classList.add('shattered');
+            }
+            
+            envelope.classList.add('open');
+            setTimeout(() => {
+                envelope.classList.add('fade-out');
+                setTimeout(() => {
+                    envelope.style.display = 'none';
+                    letterContainer.classList.add('active');
+                    startTextFlow();
+                }, isFast ? 150 : 500);
+            }, isFast ? 200 : 600);
+        }
+
+        // Поддержка двойного клика/тапа для красивого "раскола" сургуча
+        envelope.addEventListener('click', (e) => {
+            const currentTime = Date.now();
+            const tapLength = currentTime - lastEnvelopeClick;
+            if (tapLength < 300 && tapLength > 0) {
+                triggerEnvelopeOpen(true);
+            } else {
+                setTimeout(() => {
+                    if (Date.now() - lastEnvelopeClick >= 300) {
+                        triggerEnvelopeOpen(false);
+                    }
+                }, 300);
+            }
+            lastEnvelopeClick = currentTime;
+        });
+
+        function startTextFlow() {
+            isWritingActive = true;
+            showNextParagraph();
+        }
+
+        function showNextParagraph() {
+            if (currentIdx >= paragraphs.length) {
+                isWritingActive = false;
+                isCharTyping = false;
+                showFinalSteps();
+                return;
+            }
+
+            const p = paragraphs[currentIdx];
+            p.classList.add('visible');
+            autoScroll();
+
+            // Заголовки разделов и подпись выводим красивым мгновенным появлением
+            if (p.classList.contains('section-title') || p.classList.contains('signature')) {
+                p.innerHTML = originalTexts[currentIdx];
+                currentIdx++;
+                charTimerId = setTimeout(showNextParagraph, 1200);
+                return;
+            }
+
+            isCharTyping = true;
+            charIdx = 0;
+            p.innerHTML = '';
+            typeLetter();
+        }
+
+        function typeLetter() {
+            const tokens = paragraphTokens[currentIdx];
+            
+            if (charIdx < tokens.length) {
+                const token = tokens[charIdx];
+                const p = paragraphs[currentIdx];
+                
+                if (token.char === '<br>') {
+                    p.innerHTML += '<br>';
+                } else if (token.className) {
+                    p.innerHTML += `<span class="${token.className}">${token.char}</span>`;
+                } else {
+                    p.innerHTML += token.char;
+                }
+                
+                charIdx++;
+                autoScroll();
+                
+                // Расчет задержки: Кастомная скорость ИЛИ Базовая скорость (32ms)
+                let baseSpeed = token.speed || 32; 
+                let extraPause = 0;
+                
+                // Естественные паузы на пунктуации
+                if (['.', '!', '?'].includes(token.char)) {
+                    extraPause = 550;
+                } else if ([',', ';', '—'].includes(token.char)) {
+                    extraPause = 220;
+                }
+                
+                // Итоговая задержка учитывает кастомный data-pause в самом конце тегов
+                let totalDelay = baseSpeed + extraPause + token.pauseAfter;
+                
+                charTimerId = setTimeout(typeLetter, totalDelay);
+            } else {
+                isCharTyping = false;
+                currentIdx++;
+                charTimerId = setTimeout(showNextParagraph, 2200); // Пауза между абзацами
+            }
+        }
+
+        // Унифицированная и безопасная обработка жестов (Убирает баг с координатами)
+        scrollContainer.addEventListener('pointerdown', (e) => {
+            pointerStartX = e.clientX;
+            pointerStartY = e.clientY;
+        });
+
+        scrollContainer.addEventListener('pointerup', (e) => {
+            if (e.target.closest('#actions')) return;
+
+            // Если палец/мышка сместились больше чем на 10px — это осознанный скролл, игнорируем как тап
+            const deltaX = Math.abs(e.clientX - pointerStartX);
+            const deltaY = Math.abs(e.clientY - pointerStartY);
+            if (deltaX > 10 || deltaY > 10) return;
+
+            if (!isWritingActive || currentIdx >= paragraphs.length) return;
+
+            clearTimeout(charTimerId);
+
+            if (isCharTyping) {
+                // Если шел тайпинг — по тапу мгновенно раскрываем весь HTML со всеми цветами
+                const p = paragraphs[currentIdx];
+                p.classList.add('instant');
+                p.innerHTML = originalTexts[currentIdx];
+                isCharTyping = false;
+                currentIdx++;
+                autoScroll();
+                charTimerId = setTimeout(showNextParagraph, 2000);
+            } else {
+                showNextParagraph();
+            }
+        });
+
+        // Оптимизированный плавный автоскролл
+        function autoScroll() {
+            const isNearBottom = (scrollContainer.scrollHeight - scrollContainer.scrollTop - scrollContainer.clientHeight) < 140;
+            if (isNearBottom) {
+                requestAnimationFrame(() => {
+                    scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' });
+                });
+            }
+        }
+
+        function showFinalSteps() {
+            setTimeout(() => {
+                thankYouNote.classList.add('visible');
+                autoScroll();
+
+                setTimeout(() => {
+                    actionBlock.classList.add('visible');
+                    setTimeout(() => {
+                        scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' });
+                    }, 300);
+                }, 2500);
+            }, 1000);
+        }
+
+        // Надежная отправка данных с фидбеком (Formspree Verification)
+        function handleResponse(type, event) {
+            event.stopPropagation();
+            
+            const title = document.getElementById('modalTitle');
+            const text = document.getElementById('modalText');
+            const loader = document.getElementById('modalLoadingIcon');
+            const closeBtn = document.getElementById('modalCloseBtn');
+
+            // Включаем прелоадер отправки
+            title.innerText = 'Отправка ответа...';
+            text.innerText = 'Пожалуйста, подожди секунду, магия в процессе.';
+            loader.style.display = 'inline-block';
+            closeBtn.style.display = 'none';
+            modal.classList.add('active');
+
+            let statusText = "";
+            if (type === 'ready') {
+                statusText = "Elvira selected: READY TO TALK";
+            } else if (type === 'time') {
+                statusText = "Elvira selected: NEED TIME TO THINK";
+            }
+
+            document.getElementById('formAnswer').value = statusText;
+            document.getElementById('formTime').value = new Date().toLocaleString();
+            
+            const form = document.getElementById('hiddenForm');
+            
+            fetch(form.action, {
+                method: form.method,
+                body: new FormData(form),
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                loader.style.display = 'none';
+                closeBtn.style.display = 'inline-block';
+                
+                if (response.ok) {
+                    if (type === 'ready') {
+                        title.innerText = 'Спасибо за твой выбор';
+                        text.innerText = 'Напиши или скажи мне об этом, когда мы увидимся в следующий раз. Я буду ждать.';
+                    } else if (type === 'time') {
+                        title.innerText = 'Всё хорошо';
+                        text.innerText = 'Не спеши. Твоя учёба и твоё спокойствие сейчас важнее всего. Дай знать, когда у тебя будут время и силы.';
+                    }
+                } else {
+                    throw new Error('Formspree response not ok');
+                }
+            })
+            .catch(err => {
+                console.log("Formspree error: ", err);
+                loader.style.display = 'none';
+                closeBtn.style.display = 'inline-block';
+                
+                // Сценарий на случай отсутствия сети
+                title.innerText = 'Что-то пошло не так...';
+                text.innerText = 'Из-за сбоя сети ответ не ушел на сервер. Пожалуйста, просто сделай скриншот этого экрана и отправь его мне лично!';
+            });
+        }
+
+        // Привязка событий клика на кнопки выбора
+        document.getElementById('btnReady').addEventListener('click', (e) => handleResponse('ready', e));
+        document.getElementById('btnTime').addEventListener('click', (e) => handleResponse('time', e));
+
+        // Интерактивное свечение атмосферы при наведении на кнопки
+        document.getElementById('btnReady').addEventListener('mouseenter', () => ambientGlow.classList.add('glow-primary'));
+        document.getElementById('btnReady').addEventListener('mouseleave', () => ambientGlow.classList.remove('glow-primary'));
+        document.getElementById('btnTime').addEventListener('mouseenter', () => ambientGlow.classList.add('glow-secondary'));
+        document.getElementById('btnTime').addEventListener('mouseleave', () => ambientGlow.classList.remove('glow-secondary'));
+
+        const audio = document.getElementById('bg-music');
+
+// Функция включения музыки
+function startMusic() {
+  audio.play().catch(error => console.log("Браузер ждет взаимодействия"));
+  // Удаляем обработчик, чтобы он не срабатывал на каждый клик
+  document.removeEventListener('click', startMusic);
+}
+
+// Ждем первого клика в любом месте сайта
+document.addEventListener('click', startMusic);
+
+        function closeModal() { modal.classList.remove('active'); }
+    </script>
+</body>
+</html>
