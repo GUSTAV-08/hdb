@@ -202,7 +202,7 @@
             });
 
             crystallMesh.scale.setScalar(CRYSTAL_SCALE);
-            crystallMesh.position.set(-0.3, 0.1, -0.3); // Оставлен в фокусе UI/UX
+            crystallMesh.position.set(-0.25, 0.1, -0.2); // Оставлен в фокусе UI/UX
             worldGroup.add(crystallMesh);
         }, undefined, (err) => console.error('Ошибка кристалла:', err));
     }
